@@ -9,6 +9,8 @@ Register, transfer, renew and manage domains through [OSIR](https://osir.com) fr
 > for ClientFence's class names and pushed here. Please report anything you find in that repository — changes
 > made here would be overwritten by the next release.
 
+![The DNS page in the ClientFence client area](docs/screenshots/client-dns.png)
+
 ## What it does
 
 - Registration, transfer-in and renewal, including renewals paid after the registry has already auto-renewed
