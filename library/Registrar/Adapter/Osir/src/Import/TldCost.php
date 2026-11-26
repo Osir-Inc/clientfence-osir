@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Import;
+namespace Osir\ClientFence\Import;
 
 /**
  * What OSIR charges this account per year for a TLD, in USD cents, fees included.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Mapping;
+namespace Osir\ClientFence\Mapping;
 
 enum AvailabilityState
 {

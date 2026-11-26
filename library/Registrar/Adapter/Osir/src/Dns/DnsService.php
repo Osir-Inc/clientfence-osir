@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Dns;
+namespace Osir\ClientFence\Dns;
 
-use Osir\FossBilling\Domain\DomainName;
-use Osir\FossBilling\Exception\ApiErrorKind;
-use Osir\FossBilling\Exception\ApiException;
-use Osir\FossBilling\Exception\RuleException;
-use Osir\FossBilling\Exception\ValidationException;
-use Osir\FossBilling\Http\ApiClient;
-use Osir\FossBilling\Http\ApiRequest;
-use Osir\FossBilling\Http\ApiResponse;
-use Osir\FossBilling\Support\SafeLogger;
+use Osir\ClientFence\Domain\DomainName;
+use Osir\ClientFence\Exception\ApiErrorKind;
+use Osir\ClientFence\Exception\ApiException;
+use Osir\ClientFence\Exception\RuleException;
+use Osir\ClientFence\Exception\ValidationException;
+use Osir\ClientFence\Http\ApiClient;
+use Osir\ClientFence\Http\ApiRequest;
+use Osir\ClientFence\Http\ApiResponse;
+use Osir\ClientFence\Support\SafeLogger;
 
 /**
  * DNS record use cases against OSIR, used by the client area (modules/Osir).

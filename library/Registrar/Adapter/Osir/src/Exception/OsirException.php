@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Exception;
+namespace Osir\ClientFence\Exception;
 
 /**
  * Base of every exception raised inside the adapter.

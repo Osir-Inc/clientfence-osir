@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Import;
+namespace Osir\ClientFence\Import;
 
-use Osir\FossBilling\Domain\DomainName;
-use Osir\FossBilling\Mapping\DomainStatus;
+use Osir\ClientFence\Domain\DomainName;
+use Osir\ClientFence\Mapping\DomainStatus;
 
 /** A domain held in the OSIR account, as listed by OSIR. */
 final class RemoteDomain

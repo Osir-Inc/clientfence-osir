@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Http;
+namespace Osir\ClientFence\Http;
 
 /**
  * A successful OSIR response with the envelope (if any) already removed.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Dns;
+namespace Osir\ClientFence\Dns;
 
 /**
  * What OSIR reports about a domain's DNS: whether the zone exists and whether the domain actually

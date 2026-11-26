@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Mapping;
+namespace Osir\ClientFence\Mapping;
 
 /**
  * Registrant contact as ClientFence knows it, decoupled from ClientFence's classes so the

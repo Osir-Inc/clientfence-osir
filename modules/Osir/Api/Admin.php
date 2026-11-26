@@ -9,8 +9,8 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Osir\Api;
 
 use ClientFence\InformationException;
-use Osir\FossBilling\Exception\OsirException;
-use Osir\FossBilling\Import\PriceRule;
+use Osir\ClientFence\Exception\OsirException;
+use Osir\ClientFence\Import\PriceRule;
 
 /**
  * Admin API behind Domain Registration → OSIR import. Reading needs the module's "import"

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Domain;
+namespace Osir\ClientFence\Domain;
 
-use Osir\FossBilling\Exception\ValidationException;
+use Osir\ClientFence\Exception\ValidationException;
 
 /**
  * An ordered, de-duplicated, validated list of nameserver host names (ASCII form).

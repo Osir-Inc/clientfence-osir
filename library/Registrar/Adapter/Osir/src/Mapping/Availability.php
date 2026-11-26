@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Mapping;
+namespace Osir\ClientFence\Mapping;
 
-use Osir\FossBilling\Exception\ApiErrorKind;
-use Osir\FossBilling\Exception\ApiException;
+use Osir\ClientFence\Exception\ApiErrorKind;
+use Osir\ClientFence\Exception\ApiException;
 
 /**
  * Result of an availability check.

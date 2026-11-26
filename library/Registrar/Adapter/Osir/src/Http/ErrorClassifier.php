@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Http;
+namespace Osir\ClientFence\Http;
 
-use Osir\FossBilling\Exception\ApiErrorKind;
-use Osir\FossBilling\Support\Text;
+use Osir\ClientFence\Exception\ApiErrorKind;
+use Osir\ClientFence\Support\Text;
 
 /**
  * Normalises OSIR's error responses.

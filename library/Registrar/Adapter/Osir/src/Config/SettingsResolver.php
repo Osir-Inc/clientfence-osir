@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Config;
+namespace Osir\ClientFence\Config;
 
-use Osir\FossBilling\Exception\ConfigurationException;
+use Osir\ClientFence\Exception\ConfigurationException;
 
 /**
  * Turns ClientFence's stored registrar settings plus server-level overrides into {@see Settings}.

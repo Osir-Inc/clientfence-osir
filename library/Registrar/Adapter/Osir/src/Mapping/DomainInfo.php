@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Mapping;
+namespace Osir\ClientFence\Mapping;
 
 /**
  * The registry state of a domain as reported by OSIR's info endpoint.

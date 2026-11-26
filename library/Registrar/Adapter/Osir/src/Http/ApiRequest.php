@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Http;
+namespace Osir\ClientFence\Http;
 
-use Osir\FossBilling\Domain\DomainName;
+use Osir\ClientFence\Domain\DomainName;
 
 /**
  * One call to the OSIR API. Paths are built only through {@see self::path()}, which accepts a

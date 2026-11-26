@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Service;
+namespace Osir\ClientFence\Service;
 
 enum RenewalDecision
 {

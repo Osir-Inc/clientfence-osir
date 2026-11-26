@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Service;
+namespace Osir\ClientFence\Service;
 
-use Osir\FossBilling\Config\Environment;
-use Osir\FossBilling\Domain\DomainName;
+use Osir\ClientFence\Config\Environment;
+use Osir\ClientFence\Domain\DomainName;
 
 /**
  * Builds the Idempotency-Key values for OSIR's money endpoints.

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Http;
+namespace Osir\ClientFence\Http;
 
-use Osir\FossBilling\Exception\ApiErrorKind;
+use Osir\ClientFence\Exception\ApiErrorKind;
 
 /**
  * Decides whether and when to repeat a failed request, within an overall wall-clock deadline.

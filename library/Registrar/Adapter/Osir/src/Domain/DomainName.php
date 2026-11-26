@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Domain;
+namespace Osir\ClientFence\Domain;
 
-use Osir\FossBilling\Exception\ValidationException;
+use Osir\ClientFence\Exception\ValidationException;
 
 /**
  * A validated, normalised domain name in its ASCII (A-label / punycode) form.

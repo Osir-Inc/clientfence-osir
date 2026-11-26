@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Dns;
+namespace Osir\ClientFence\Dns;
 
-use Osir\FossBilling\Exception\ValidationException;
+use Osir\ClientFence\Exception\ValidationException;
 
 /**
  * The record types OSIR's DNS accepts.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Exception;
+namespace Osir\ClientFence\Exception;
 
 /**
  * No usable HTTP response was received (DNS, TCP, TLS, timeout, oversized response).

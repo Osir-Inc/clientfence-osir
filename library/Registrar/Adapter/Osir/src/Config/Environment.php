@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Config;
+namespace Osir\ClientFence\Config;
 
 /**
  * Which OSIR environment the adapter operates on. OSIR offers no sandbox to partners, so there is

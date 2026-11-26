@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Support;
+namespace Osir\ClientFence\Support;
 
 /**
  * Removes secrets and personal data from anything that may end up in a log.

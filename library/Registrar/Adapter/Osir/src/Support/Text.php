@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Support;
+namespace Osir\ClientFence\Support;
 
 /**
  * Sanitising helpers for text that crosses a trust boundary (upstream error messages,

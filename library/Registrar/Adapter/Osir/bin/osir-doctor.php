@@ -104,8 +104,8 @@ if ($models === []) {
 $domain = null;
 if (isset($options['domain']) && is_string($options['domain'])) {
     try {
-        $domain = Osir\FossBilling\Domain\DomainName::fromString($options['domain']);
-    } catch (Osir\FossBilling\Exception\ValidationException $e) {
+        $domain = Osir\ClientFence\Domain\DomainName::fromString($options['domain']);
+    } catch (Osir\ClientFence\Exception\ValidationException $e) {
         fwrite(STDERR, 'Invalid domain: ' . $e->getMessage() . "\n");
         $run->finished = true;
         exit(2);

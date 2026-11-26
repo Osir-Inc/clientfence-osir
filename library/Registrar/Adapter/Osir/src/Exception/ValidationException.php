@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Exception;
+namespace Osir\ClientFence\Exception;
 
 /**
  * Input rejected locally, before any request is sent to OSIR.

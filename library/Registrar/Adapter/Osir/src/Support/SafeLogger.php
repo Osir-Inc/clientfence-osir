@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Support;
+namespace Osir\ClientFence\Support;
 
 /**
  * The only way the adapter writes to ClientFence's log.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Exception;
+namespace Osir\ClientFence\Exception;
 
 /**
  * OSIR answered, but not with success.

@@ -6,32 +6,34 @@ declare(strict_types=1);
  * OSIR domain registrar adapter for ClientFence.
  *
  * Copyright OSIR Inc. Licensed under the Apache License, Version 2.0.
- * Documentation: https://github.com/osir/fossbilling-registrar
+ * Documentation: https://github.com/Osir-Inc/clientfence-osir
  *
  * This class is deliberately thin: it translates ClientFence's Registrar_Domain objects into the
- * adapter's validated types, calls {@see Osir\FossBilling\Service\RegistrarService}, and converts
+ * adapter's validated types, calls {@see Osir\ClientFence\Service\RegistrarService}, and converts
  * every internal failure into a Registrar_Exception whose text is safe to show to end clients.
  * Upstream error details (which can include the reseller's balance) go to the log only.
  */
 
-use Osir\FossBilling\Config\Settings;
-use Osir\FossBilling\Config\SettingsResolver;
-use Osir\FossBilling\Dns\DnsService;
-use Osir\FossBilling\Exception\ApiErrorKind;
-use Osir\FossBilling\Exception\ApiException;
-use Osir\FossBilling\Exception\ConfigurationException;
-use Osir\FossBilling\Exception\RuleException;
-use Osir\FossBilling\Exception\TransportException;
-use Osir\FossBilling\Exception\ValidationException;
-use Osir\FossBilling\Http\ApiClient;
-use Osir\FossBilling\Http\RetryPolicy;
-use Osir\FossBilling\Import\ImportService;
-use Osir\FossBilling\Mapping\AvailabilityState;
-use Osir\FossBilling\Mapping\DomainStatus;
-use Osir\FossBilling\Mapping\FossBillingMapper as Map;
-use Osir\FossBilling\Service\Diagnostics;
-use Osir\FossBilling\Service\RegistrarService;
-use Osir\FossBilling\Support\SafeLogger;
+use Osir\ClientFence\Config\Settings;
+use Osir\ClientFence\Config\SettingsResolver;
+use Osir\ClientFence\Dns\DnsService;
+use Osir\ClientFence\Exception\ApiErrorKind;
+use Osir\ClientFence\Exception\ApiException;
+use Osir\ClientFence\Exception\ConfigurationException;
+use Osir\ClientFence\Exception\RuleException;
+use Osir\ClientFence\Exception\TransportException;
+use Osir\ClientFence\Exception\ValidationException;
+use Osir\ClientFence\Http\ApiClient;
+use Osir\ClientFence\Http\RetryPolicy;
+use Osir\ClientFence\Import\ImportService;
+use Osir\ClientFence\Import\TldPriceList;
+use Osir\ClientFence\Mapping\AvailabilityState;
+use Osir\ClientFence\Mapping\DomainStatus;
+use Osir\ClientFence\Mapping\PlatformMapper as Map;
+use Osir\ClientFence\Mapping\TransferState;
+use Osir\ClientFence\Service\Diagnostics;
+use Osir\ClientFence\Service\RegistrarService;
+use Osir\ClientFence\Support\SafeLogger;
 
 // Requested directly over HTTP (e.g. nginx without ClientFence's rewrite rules), the parent class is
 // missing: stop quietly instead of a fatal error that could disclose the file system path.
@@ -39,9 +41,29 @@ if (!class_exists(Registrar_AdapterAbstract::class)) {
     return;
 }
 
+// ClientFence 1.0.62 added these two optional registrar capabilities. On an older release
+// they are missing, and the adapter keeps working without them rather than failing to load.
+if (!interface_exists('Registrar_TldPrices')) {
+    interface Registrar_TldPrices
+    {
+        /** @param list<string> $tlds */
+        public function getTldPrices(array $tlds = []): array;
+    }
+}
+if (!interface_exists('Registrar_TransferStatus')) {
+    interface Registrar_TransferStatus
+    {
+        public const PENDING = 'pending';
+        public const COMPLETED = 'completed';
+        public const FAILED = 'failed';
+
+        public function getTransferStatus(Registrar_Domain $domain): array;
+    }
+}
+
 require_once __DIR__ . '/Osir/autoload.php';
 
-class Registrar_Adapter_Osir extends Registrar_AdapterAbstract
+class Registrar_Adapter_Osir extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     /** A registry expiry this far past ClientFence's means a renewal happened (about half a year). */
     private const int EXPIRY_JUMP_SECONDS = 180 * 86400;
@@ -57,6 +79,7 @@ class Registrar_Adapter_Osir extends Registrar_AdapterAbstract
     private array $options;
 
     private ?RegistrarService $service = null;
+    private ?TldPriceList $tldPriceList = null;
     private ?Settings $settings = null;
     private ?SafeLogger $safeLog = null;
     private ?ConfigurationException $configurationError = null;
@@ -315,6 +338,54 @@ class Registrar_Adapter_Osir extends Registrar_AdapterAbstract
         });
     }
 
+    // ----------------------------------------------------------- ClientFence capabilities
+    //
+    // ClientFence adds two optional interfaces to the registrar contract, and the generated
+    // ClientFence build of this adapter declares them (dev/scripts/make-clientfence.sh). The
+    // methods are here in both builds: ClientFence simply never calls them.
+
+    /**
+     * OSIR's price list for ClientFence's "TLDs and prices" page, one slice per call: the cost of
+     * one year per action in USD, fees included. ClientFence applies the markup, the rounding and
+     * the currency conversion, and asks again for whatever `remaining` names.
+     *
+     * The plugin's own import page (Osir module) does the same job on both platforms and adds the
+     * preview and the domain import; this exists so ClientFence's native page and its scheduled
+     * price sync work too.
+     *
+     * @param list<string> $tlds TLDs to price, with the leading dot; [] = every TLD OSIR sells
+     *
+     * @return array{currency: string, prices: array<string, array{register: float|null, renew: float|null, transfer: float|null}>, remaining: list<string>}
+     */
+    public function getTldPrices(array $tlds = []): array
+    {
+        return $this->guard(fn(): array => $this->tldPriceList()->slice(array_values(array_filter($tlds, 'is_string'))));
+    }
+
+    /**
+     * Where an incoming transfer stands, so ClientFence can keep the order pending until the
+     * registry has actually moved the domain instead of closing it when OSIR accepts the request.
+     *
+     * @return array{status: string, message: string}
+     */
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        return $this->guard(function () use ($domain): array {
+            $progress = $this->service()->transferProgress(Map::domainName($domain));
+
+            // The values of Registrar_TransferStatus::PENDING / COMPLETED / FAILED, spelled out so
+            // that the ClientFence build (where that interface does not exist) still compiles.
+            $status = match ($progress->state) {
+                TransferState::Completed => 'completed',
+                TransferState::Failed => 'failed',
+                TransferState::Pending => 'pending',
+            };
+            $this->log()->info(sprintf('Transfer of %s: %s. %s', $domain->getName(), $status, $progress->message));
+
+            return ['status' => $status, 'message' => $progress->message];
+        });
+    }
+
     /**
      * Builds the service on first use. Overridable so tests can inject a mock HTTP client through
      * {@see Registrar_AdapterAbstract::getHttpClient()}.
@@ -377,6 +448,20 @@ class Registrar_Adapter_Osir extends Registrar_AdapterAbstract
     }
 
     /**
+     * The price list, kept for the whole request: ClientFence asks for one slice after another and
+     * each slice would otherwise fetch the catalog again.
+     *
+     * @throws ConfigurationException when the adapter cannot be configured
+     */
+    private function tldPriceList(): TldPriceList
+    {
+        $this->service();
+        assert($this->safeLog !== null);
+
+        return $this->tldPriceList ??= new TldPriceList($this->importService(), $this->safeLog);
+    }
+
+    /**
      * DNS records for the client area (the companion module in modules/Osir). Ownership of the
      * domain is decided there and re-checked by OSIR; this only builds the client.
      *
@@ -396,7 +481,7 @@ class Registrar_Adapter_Osir extends Registrar_AdapterAbstract
     /**
      * The installation-wide id used in idempotency keys, and the environment they carry.
      *
-     * @return array{installation: string, environment: \Osir\FossBilling\Config\Environment}
+     * @return array{installation: string, environment: \Osir\ClientFence\Config\Environment}
      */
     public function keyScope(): array
     {

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Mapping;
+namespace Osir\ClientFence\Mapping;
 
-use Osir\FossBilling\Domain\DomainName;
-use Osir\FossBilling\Domain\Nameservers;
-use Osir\FossBilling\Exception\ValidationException;
-use Osir\FossBilling\Service\OrderRef;
+use Osir\ClientFence\Domain\DomainName;
+use Osir\ClientFence\Domain\Nameservers;
+use Osir\ClientFence\Exception\ValidationException;
+use Osir\ClientFence\Service\OrderRef;
 
 /**
  * Translates between ClientFence's registrar objects and the adapter's own types.
  * This is the only class (besides the adapter) that touches Registrar_Domain / Registrar_Domain_Contact.
  */
-final class FossBillingMapper
+final class PlatformMapper
 {
     /** @throws ValidationException */
     public static function domainName(\Registrar_Domain $domain): DomainName

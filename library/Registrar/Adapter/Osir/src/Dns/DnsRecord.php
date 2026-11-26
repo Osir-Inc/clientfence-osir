@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Dns;
+namespace Osir\ClientFence\Dns;
 
-use Osir\FossBilling\Domain\DomainName;
-use Osir\FossBilling\Exception\ValidationException;
+use Osir\ClientFence\Domain\DomainName;
+use Osir\ClientFence\Exception\ValidationException;
 
 /**
  * One DNS record, either as OSIR returned it (with an id) or as the client area wants it written

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Mapping;
+namespace Osir\ClientFence\Mapping;
 
 /**
  * OSIR's summary status of a domain (the `status` field of the info endpoint).

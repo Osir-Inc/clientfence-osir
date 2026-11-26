@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Config;
+namespace Osir\ClientFence\Config;
 
 /**
  * Immutable, fully validated runtime configuration of one adapter instance.

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Import;
+namespace Osir\ClientFence\Import;
 
-use Osir\FossBilling\Exception\ValidationException;
+use Osir\ClientFence\Exception\ValidationException;
 
 /**
  * Turns OSIR's cost into a ClientFence selling price: cost + percentage + fixed amount, then

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Config;
+namespace Osir\ClientFence\Config;
 
 /**
  * Holds a credential so it cannot leak through string conversion, var_dump/print_r/var_export,

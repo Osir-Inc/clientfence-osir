@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Service;
+namespace Osir\ClientFence\Service;
 
-use Osir\FossBilling\Exception\RuleException;
-use Osir\FossBilling\Mapping\DomainInfo;
-use Osir\FossBilling\Mapping\DomainStatus;
+use Osir\ClientFence\Exception\RuleException;
+use Osir\ClientFence\Mapping\DomainInfo;
+use Osir\ClientFence\Mapping\DomainStatus;
 
 /**
  * Decides what a ClientFence renewal must do at OSIR. Kept apart from the HTTP plumbing because

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Import;
+namespace Osir\ClientFence\Import;
 
 /**
  * How a selling price is rounded after the markup. Rounding only ever goes UP, so it can never

@@ -14,19 +14,19 @@ use ClientFence\Mod\Product\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use ClientFence\InformationException;
 use ClientFence\InjectionAwareInterface;
-use Osir\FossBilling\Dns\DnsRecord;
-use Osir\FossBilling\Dns\DnsService;
-use Osir\FossBilling\Dns\RecordType;
-use Osir\FossBilling\Domain\DomainName;
-use Osir\FossBilling\Exception\OsirException;
-use Osir\FossBilling\Import\CatalogTld;
-use Osir\FossBilling\Import\ImportService;
-use Osir\FossBilling\Import\PriceRule;
-use Osir\FossBilling\Import\RemoteDomain;
-use Osir\FossBilling\Import\TldCost;
-use Osir\FossBilling\Mapping\ContactData;
-use Osir\FossBilling\Service\IdempotencyKeys;
-use Osir\FossBilling\Service\OrderRef;
+use Osir\ClientFence\Dns\DnsRecord;
+use Osir\ClientFence\Dns\DnsService;
+use Osir\ClientFence\Dns\RecordType;
+use Osir\ClientFence\Domain\DomainName;
+use Osir\ClientFence\Exception\OsirException;
+use Osir\ClientFence\Import\CatalogTld;
+use Osir\ClientFence\Import\ImportService;
+use Osir\ClientFence\Import\PriceRule;
+use Osir\ClientFence\Import\RemoteDomain;
+use Osir\ClientFence\Import\TldCost;
+use Osir\ClientFence\Mapping\ContactData;
+use Osir\ClientFence\Service\IdempotencyKeys;
+use Osir\ClientFence\Service\OrderRef;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -41,7 +41,7 @@ use Symfony\Contracts\Cache\ItemInterface;
  *
  * @phpstan-type Prices array{register: string, renew: string, transfer: string}
  * @phpstan-type Existing array{id: int, registrar: string, same_registrar: bool, active: bool, price: Prices}
- * @phpstan-type TldRow array{tld: string, display?: string, cost?: Prices, price?: Prices, estimated?: bool, fossbilling?: Existing|null, planned?: 'create'|'update'|'skip', status?: string, message?: string}
+ * @phpstan-type TldRow array{tld: string, display?: string, cost?: Prices, price?: Prices, estimated?: bool, platform?: Existing|null, planned?: 'create'|'update'|'skip', status?: string, message?: string}
  * @phpstan-type DomainResult array{domain: string, status: 'imported'|'skipped'|'failed', message?: string, order_id?: int}
  */
 class Service implements InjectionAwareInterface
@@ -136,7 +136,7 @@ class Service implements InjectionAwareInterface
                 'has_premium' => $tld->hasPremium,
                 'has_restrictions' => $tld->hasRestrictions,
                 'list_price' => self::prices($tld->registerCents, $tld->renewCents, $tld->transferCents),
-                'fossbilling' => $this->existingRow($existing[$tld->tld] ?? null, $registrarId),
+                'platform' => $this->existingRow($existing[$tld->tld] ?? null, $registrarId),
             ];
         }
 
@@ -313,7 +313,7 @@ class Service implements InjectionAwareInterface
                 $row['price'] = self::prices($rule->sellingCents($cost->registerCents), $rule->sellingCents($cost->renewCents), $rule->sellingCents($cost->transferCents));
                 $row['estimated'] = $cost->estimated;
                 $current = $this->existingRow($existing[$tld] ?? null, $registrarId);
-                $row['fossbilling'] = $current;
+                $row['platform'] = $current;
                 if ($current === null) {
                     $row['planned'] = 'create';
                 } elseif ($current['same_registrar']) {

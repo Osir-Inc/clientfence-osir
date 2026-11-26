@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Http;
+namespace Osir\ClientFence\Http;
 
-use Osir\FossBilling\Config\Settings;
-use Osir\FossBilling\Exception\ApiErrorKind;
-use Osir\FossBilling\Exception\ApiException;
-use Osir\FossBilling\Exception\TransportException;
-use Osir\FossBilling\Support\SafeLogger;
-use Osir\FossBilling\Version;
+use Osir\ClientFence\Config\Settings;
+use Osir\ClientFence\Exception\ApiErrorKind;
+use Osir\ClientFence\Exception\ApiException;
+use Osir\ClientFence\Exception\TransportException;
+use Osir\ClientFence\Support\SafeLogger;
+use Osir\ClientFence\Version;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

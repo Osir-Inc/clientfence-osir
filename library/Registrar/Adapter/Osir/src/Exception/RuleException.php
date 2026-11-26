@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Exception;
+namespace Osir\ClientFence\Exception;
 
 /**
  * The adapter refused an operation on purpose (premium name, cost above the configured cap,

@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Service;
+namespace Osir\ClientFence\Service;
 
-use Osir\FossBilling\Config\Settings;
-use Osir\FossBilling\Domain\DomainName;
-use Osir\FossBilling\Exception\ApiException;
-use Osir\FossBilling\Exception\OsirException;
-use Osir\FossBilling\Mapping\AvailabilityState;
-use Osir\FossBilling\Version;
+use Osir\ClientFence\Config\Settings;
+use Osir\ClientFence\Domain\DomainName;
+use Osir\ClientFence\Exception\ApiException;
+use Osir\ClientFence\Exception\OsirException;
+use Osir\ClientFence\Mapping\AvailabilityState;
+use Osir\ClientFence\Version;
 
 /**
  * Read-only health checks for an installed adapter: configuration, TLS + authentication against
  * OSIR, account balance and, optionally, one domain. Never calls anything that changes state or
- * costs money, and never prints more of the API key than {@see \Osir\FossBilling\Config\Secret::hint()}.
+ * costs money, and never prints more of the API key than {@see \Osir\ClientFence\Config\Secret::hint()}.
  */
 final class Diagnostics
 {
@@ -28,16 +28,16 @@ final class Diagnostics
     {
         $results = [];
         $results[] = self::result('Adapter version', 'ok', Version::PLUGIN);
-        $fossbilling = class_exists(\ClientFence\Version::class) ? \ClientFence\Version::VERSION : null;
+        $platform = class_exists(\ClientFence\Version::class) ? \ClientFence\Version::VERSION : null;
         // ClientFence, the fork, keeps VERSION on its ClientFence lineage (what the compatibility
         // check below needs) and numbers its own releases separately. Report the number the
         // administrator actually sees in the panel.
         $ownVersionConstant = \ClientFence\Version::class . '::CLIENTFENCE';
         $ownVersion = defined($ownVersionConstant) ? constant($ownVersionConstant) : null;
-        $shown = is_string($ownVersion) && $ownVersion !== '' ? $ownVersion : (string) $fossbilling;
+        $shown = is_string($ownVersion) && $ownVersion !== '' ? $ownVersion : (string) $platform;
         $results[] = match (true) {
-            $fossbilling === null => self::result('ClientFence version', 'warn', 'unknown'),
-            version_compare($fossbilling, Version::MIN_FOSSBILLING, '<') => self::result('ClientFence version', 'fail', sprintf('%s — %s or newer is required (older versions show API keys in the admin panel)', $shown, Version::MIN_FOSSBILLING)),
+            $platform === null => self::result('ClientFence version', 'warn', 'unknown'),
+            version_compare($platform, Version::MIN_PLATFORM, '<') => self::result('ClientFence version', 'fail', sprintf('%s — %s or newer is required (older versions show API keys in the admin panel)', $shown, Version::MIN_PLATFORM)),
             default => self::result('ClientFence version', 'ok', $shown),
         };
         $results[] = self::result('Environment', 'ok', sprintf('%s (OSIR environment "%s")', $this->settings->environment->value, $this->settings->environment->apiValue()));

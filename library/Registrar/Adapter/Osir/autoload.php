@@ -3,17 +3,17 @@
 declare(strict_types=1);
 
 /*
- * PSR-4 autoloader for the OSIR adapter's classes (namespace Osir\FossBilling\ -> ./src/).
+ * PSR-4 autoloader for the OSIR adapter's classes (namespace Osir\ClientFence\ -> ./src/).
  *
  * The adapter ships without Composer dependencies: ClientFence already provides everything it
  * needs (Symfony HttpClient, intl). This file only registers a loader and is safe to include
  * more than once or to request directly over HTTP (it has no other side effects).
  */
-if (!defined('OSIR_FOSSBILLING_AUTOLOADER')) {
-    define('OSIR_FOSSBILLING_AUTOLOADER', true);
+if (!defined('OSIR_ADAPTER_AUTOLOADER')) {
+    define('OSIR_ADAPTER_AUTOLOADER', true);
 
     spl_autoload_register(static function (string $class): void {
-        $prefix = 'Osir\\FossBilling\\';
+        $prefix = 'Osir\\ClientFence\\';
         if (!str_starts_with($class, $prefix)) {
             return;
         }

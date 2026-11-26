@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Mapping;
+namespace Osir\ClientFence\Mapping;
 
-use Osir\FossBilling\Exception\ValidationException;
+use Osir\ClientFence\Exception\ValidationException;
 
 /**
  * Validates a registrant and converts it to OSIR's contact payload.

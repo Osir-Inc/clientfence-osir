@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Import;
+namespace Osir\ClientFence\Import;
 
-use Osir\FossBilling\Domain\DomainName;
-use Osir\FossBilling\Exception\ApiErrorKind;
-use Osir\FossBilling\Exception\ApiException;
-use Osir\FossBilling\Exception\RuleException;
-use Osir\FossBilling\Exception\ValidationException;
-use Osir\FossBilling\Http\ApiClient;
-use Osir\FossBilling\Http\ApiRequest;
-use Osir\FossBilling\Mapping\ContactData;
-use Osir\FossBilling\Mapping\DomainInfoParser;
-use Osir\FossBilling\Mapping\DomainStatus;
-use Osir\FossBilling\Support\SafeLogger;
+use Osir\ClientFence\Domain\DomainName;
+use Osir\ClientFence\Exception\ApiErrorKind;
+use Osir\ClientFence\Exception\ApiException;
+use Osir\ClientFence\Exception\RuleException;
+use Osir\ClientFence\Exception\ValidationException;
+use Osir\ClientFence\Http\ApiClient;
+use Osir\ClientFence\Http\ApiRequest;
+use Osir\ClientFence\Mapping\ContactData;
+use Osir\ClientFence\Mapping\DomainInfoParser;
+use Osir\ClientFence\Mapping\DomainStatus;
+use Osir\ClientFence\Support\SafeLogger;
 
 /**
  * Read-only queries behind the "Import from OSIR" tools: the TLD catalog, what a TLD costs this

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Osir\FossBilling\Import;
+namespace Osir\ClientFence\Import;
 
-use Osir\FossBilling\Domain\DomainName;
-use Osir\FossBilling\Exception\ValidationException;
+use Osir\ClientFence\Domain\DomainName;
+use Osir\ClientFence\Exception\ValidationException;
 
 /**
  * One entry of OSIR's public TLD catalog. The prices are OSIR's LIST prices in USD cents,
