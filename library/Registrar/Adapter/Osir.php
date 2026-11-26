@@ -34,6 +34,7 @@ use Osir\ClientFence\Mapping\TransferState;
 use Osir\ClientFence\Service\Diagnostics;
 use Osir\ClientFence\Service\RegistrarService;
 use Osir\ClientFence\Support\SafeLogger;
+use Osir\ClientFence\Version;
 
 // Requested directly over HTTP (e.g. nginx without ClientFence's rewrite rules), the parent class is
 // missing: stop quietly instead of a fatal error that could disclose the file system path.
@@ -397,6 +398,7 @@ class Registrar_Adapter_Osir extends Registrar_AdapterAbstract implements Regist
         if ($this->configurationError !== null) {
             throw $this->configurationError; // the raw keys are gone; repeat the real reason, not "no key"
         }
+        self::assertFilesFromOneRelease();
         if ($this->service === null) {
             try {
                 $settings = SettingsResolver::fromRuntime()->resolve($this->options, (bool) $this->_testMode, self::installationSeed());
@@ -418,6 +420,51 @@ class Registrar_Adapter_Osir extends Registrar_AdapterAbstract implements Regist
     }
 
     /**
+     * Half-finished upgrades are the one failure nobody can read: the only symptom is PHP saying
+     * some class is "not found", which tells an administrator nothing about what to do.
+     *
+     * It happens because this adapter is a file (Osir.php) beside a folder of the same name
+     * (Osir/): a file manager that will not overwrite the file, an opcode cache still serving the
+     * old one, or an upload that stopped halfway leave the two halves on different releases.
+     *
+     * @throws Registrar_Exception naming the paths to delete and upload again
+     */
+    private static function assertFilesFromOneRelease(): void
+    {
+        foreach ([SettingsResolver::class, SafeLogger::class, RegistrarService::class, Version::class] as $class) {
+            if (!class_exists($class)) {
+                throw new Registrar_Exception(
+                    'The OSIR adapter\'s files are incomplete or come from two different releases. Delete the file library/Registrar/Adapter/Osir.php, the folder library/Registrar/Adapter/Osir and the folder modules/Osir, upload the archive for this platform again, and restart PHP (or clear the opcode cache).',
+                );
+            }
+        }
+
+        $module = self::moduleVersion();
+        if ($module !== null && $module !== Version::PLUGIN) {
+            throw new Registrar_Exception(
+                'The OSIR registrar adapter is :adapter but the OSIR module is :module. They must come from the same release: delete the file library/Registrar/Adapter/Osir.php, the folder library/Registrar/Adapter/Osir and the folder modules/Osir, upload the archive for this platform again, and restart PHP.',
+                [':adapter' => Version::PLUGIN, ':module' => $module],
+            );
+        }
+    }
+
+    /**
+     * The version of the companion module as its manifest states it, or null when the module is
+     * not installed (which is fine: the registrar works without it).
+     */
+    public static function moduleVersion(): ?string
+    {
+        $manifest = dirname(__DIR__, 3) . '/modules/Osir/manifest.json';
+        if (!is_file($manifest)) {
+            return null;
+        }
+        $data = json_decode((string) file_get_contents($manifest), true);
+        $version = is_array($data) ? ($data['version'] ?? null) : null;
+
+        return is_string($version) && $version !== '' ? $version : null;
+    }
+
+    /**
      * Read-only health checks, used by bin/osir-doctor.php.
      *
      * @throws ConfigurationException when the adapter cannot even be configured (the doctor reports it)
@@ -427,7 +474,7 @@ class Registrar_Adapter_Osir extends Registrar_AdapterAbstract implements Regist
         $service = $this->service();
         assert($this->settings !== null);
 
-        return new Diagnostics($service, $this->settings);
+        return new Diagnostics($service, $this->settings, self::moduleVersion());
     }
 
     /**
